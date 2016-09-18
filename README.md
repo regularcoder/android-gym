@@ -1,5 +1,5 @@
 # android-gym
 
-1. PlainPomo
+## PlainPomo
 
 A simple Pomodoro timer.
