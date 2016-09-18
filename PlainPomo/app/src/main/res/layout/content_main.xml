@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/colorMainBackground"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="io.github.regularcoder.plainpomo.MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    <TextView
+        android:id="@+id/countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:text="25:00"
+        android:textSize="@dimen/countdown_size"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_below="@id/countdown"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_below="@id/countdown"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <Button
+            android:id="@+id/start_button"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/start_timer"
+            android:onClick="startTimer"/>
+
+        <Button
+            android:id="@+id/stop_button"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/stop_timer"
+            android:onClick="stopTimer"/>
+
+        <Button
+            android:id="@+id/reset_button"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/reset_timer"
+            android:onClick="resetTimer"/>
+    </LinearLayout>
+</RelativeLayout>
