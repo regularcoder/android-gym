@@ -16,20 +16,36 @@ import android.widget.TextView;
 import java.util.Timer;
 
 public class MainActivity extends AppCompatActivity {
-    CountDownTimer timer;
+    private static final String STATE_MILLIS = "millis";
+    private static final String STATE_ISRUNNING = "isrunning";
 
-    long countDownMinutes = 1;
+
+    private final long countDownMinutes = 7;
 
     long startMillis;
+
+    CountDownTimer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState != null) {
+            startMillis = savedInstanceState.getLong(STATE_MILLIS);
+
+            //Resume timer if it was running prior to orientation change
+            if(savedInstanceState.getBoolean(STATE_ISRUNNING)) {
+                startTimer();
+            }
+        }
+        else {
+            startMillis = countDownMinutes * 60 * 1000;
+        }
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        startMillis = countDownMinutes * 60 * 1000;
         updateTimerText(startMillis);
 
         //Prevent button text from getting automatically capitalized
@@ -41,6 +57,24 @@ public class MainActivity extends AppCompatActivity {
 
         Button reset_button = (Button) findViewById(R.id.reset_button);
         reset_button.setTransformationMethod(null);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // Make sure to call the super method so that the states of our views are saved
+        super.onSaveInstanceState(outState);
+
+        // Save state in case of orientation changes
+        outState.putLong(STATE_MILLIS, startMillis);
+
+        Boolean timerRunning;
+        if(timer == null) {
+            timerRunning = false;
+        }
+        else {
+            timerRunning = true;
+        }
+        outState.putBoolean(STATE_ISRUNNING, timerRunning);
     }
 
     // Starts timer
@@ -65,7 +99,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Starts timer
-    public void startTimer(View view) {
+    public void startButtonClick(View view) {
+        startTimer();
+    }
+
+    private void startTimer() {
         if(timer == null) {
             timer = new CountDownTimer(startMillis, 1000) {
 
