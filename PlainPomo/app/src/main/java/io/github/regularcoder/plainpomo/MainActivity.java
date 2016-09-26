@@ -15,10 +15,17 @@ import android.widget.TextView;
 
 import java.util.Timer;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
+    @BindView(R.id.countdown) TextView countdown;
+    @BindView(R.id.stop_button) Button stop_button;
+    @BindView(R.id.reset_button) Button reset_button;
+    @BindView(R.id.start_button) Button start_button;
+
     private static final String STATE_MILLIS = "millis";
     private static final String STATE_ISRUNNING = "isrunning";
-
 
     private final long countDownMinutes = 7;
 
@@ -43,19 +50,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         updateTimerText(startMillis);
 
         //Prevent button text from getting automatically capitalized
-        Button stop_button = (Button) findViewById(R.id.stop_button);
         stop_button.setTransformationMethod(null);
-
-        Button start_button = (Button) findViewById(R.id.start_button);
         start_button.setTransformationMethod(null);
-
-        Button reset_button = (Button) findViewById(R.id.reset_button);
         reset_button.setTransformationMethod(null);
     }
 
@@ -91,11 +95,9 @@ public class MainActivity extends AppCompatActivity {
 
     //Update timer text
     private void updateTimerText(long millisUntilFinished) {
-        TextView countDown = (TextView) findViewById(R.id.countdown);
-
         long secondsRemaming = millisUntilFinished / 1000;
 
-        countDown.setText(String.format("%02d:%02d", secondsRemaming / 60, secondsRemaming % 60));
+        countdown.setText(String.format("%02d:%02d", secondsRemaming / 60, secondsRemaming % 60));
     }
 
     // Starts timer
