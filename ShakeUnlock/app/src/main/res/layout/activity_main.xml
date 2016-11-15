@@ -7,23 +7,42 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="io.github.regularcoder.shakeunlock.MainActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/message"/>
+        android:text="ShakeUnlock"
+        android:textSize="40sp"
+        android:id="@+id/header_message"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lock"
+        android:text="Lock now"
         android:onClick="lockScreen"/>
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New"
-        android:onClick="startUnlockActivity"/>
+        android:text="@string/control_service"/>
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/serviceToggle"
+        android:checked="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sensitivity_slider"/>
+
+    <SeekBar
+        android:id="@+id/sensitivityControl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:progress="70"
+        android:max="100" />
 </LinearLayout>

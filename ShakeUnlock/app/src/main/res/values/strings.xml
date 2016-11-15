@@ -2,4 +2,6 @@
     <string name="app_name">ShakeUnlock</string>
     <string name="admin_receiver_status">Status: %s</string>
     <string name="admin_receiver_status_enabled">Admin-screen access enabled</string>
+    <string name="sensitivity_slider">Shake sensitivity:</string>
+    <string name="control_service">Enable service?</string>
 </resources>

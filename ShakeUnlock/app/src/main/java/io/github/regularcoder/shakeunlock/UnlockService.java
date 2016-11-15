@@ -5,9 +5,11 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.app.admin.DevicePolicyManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -16,7 +18,9 @@ import android.hardware.display.DisplayManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.Display;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,7 +65,7 @@ public class UnlockService extends Service implements SensorEventListener {
             //Detect shaking
             float speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
 
-            if (speed > 800) {
+            if (speed > (100 - sensitivity) * 10) {
                 //See if screen is off
                 DisplayManager dm = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);
                 for (Display display : dm.getDisplays()) {
@@ -84,7 +88,7 @@ public class UnlockService extends Service implements SensorEventListener {
 
     public Handler handler = null;
     public static Runnable runnable = null;
-    public Context t = this;
+    private Integer sensitivity;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -112,6 +116,30 @@ public class UnlockService extends Service implements SensorEventListener {
 
         startForeground(1, notification);
 
+        sensitivity = 50;
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("sensitivity-changed"));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("stop-service"));
+
         return super.onStartCommand(intent, Service.START_STICKY,startId);
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch(intent.getAction()) {
+                case "stop-service":
+                    stopSelf();
+                    break;
+
+                case "sensitivity-changed":
+                    // Get extra data included in the Intent
+                    sensitivity = intent.getIntExtra("sensitivity", 50);
+                    Log.d("receiver", "Got message: " + sensitivity);
+        }
+        }
+    };
 }
