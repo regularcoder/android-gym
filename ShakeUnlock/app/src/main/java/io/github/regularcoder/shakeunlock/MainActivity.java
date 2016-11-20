@@ -57,13 +57,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Intent intent = new Intent("sensitivity-changed");
-                // You can also include some extra data.
+                Intent intent = new Intent(Constants.ACTION.SENSITIVITY_CHANGED_ACTION);
+
                 intent.putExtra("sensitivity", progressChanged);
                 LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);
-
-                Toast.makeText(MainActivity.this,"seek bar progress:"+progressChanged,
-                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -81,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                     startUnlockService();
                 } else {
                     //Stop the service
-                    Intent intent = new Intent("stop-service");;
+                    Intent intent = new Intent(Constants.ACTION.STOP_SERVICE_MAIN_ACTION);
                     LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);
                 }
             }

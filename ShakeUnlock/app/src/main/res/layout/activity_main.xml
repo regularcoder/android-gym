@@ -10,18 +10,12 @@
     android:orientation="vertical"
     tools:context="io.github.regularcoder.shakeunlock.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ShakeUnlock"
-        android:textSize="40sp"
-        android:id="@+id/header_message"/>
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Lock now"
-        android:onClick="lockScreen"/>
+        android:onClick="lockScreen"
+        android:layout_marginBottom="30dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,7 +26,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/serviceToggle"
-        android:checked="true"/>
+        android:checked="true"
+        android:layout_marginBottom="30dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,5 +39,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:progress="70"
-        android:max="100" />
+        android:max="100"
+        android:progressDrawable="@drawable/progressbar"
+        android:thumb="@drawable/progress_thumb"
+        android:splitTrack="false"/>
 </LinearLayout>

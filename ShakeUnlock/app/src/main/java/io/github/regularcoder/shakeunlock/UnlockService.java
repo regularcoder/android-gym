@@ -92,54 +92,78 @@ public class UnlockService extends Service implements SensorEventListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        SensorManager mSensorManager;
-        Sensor mSensor;
+        if(intent.getAction() == null) {
+            SensorManager mSensorManager;
+            Sensor mSensor;
 
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
-        //Show foreground notification so locking service will continue running
-        Intent notificationIntent = new Intent(this, UnlockService.class);
+            //Show foreground notification so locking service will continue running
+            Intent notificationIntent = new Intent(this, UnlockService.class);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                notificationIntent, 0);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                    notificationIntent, 0);
 
-        Notification notification = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.intro_icon_1)
-                .setContentTitle("ShakeUnlock")
-                .setContentText("Unlock service running")
-                .setContentIntent(pendingIntent)
-                .setOngoing(true)
-                .build();
+            //Intent that locks the phone
+            Intent lockIntent = new Intent(this, UnlockService.class);
+            lockIntent.setAction(Constants.ACTION.LOCK_ACTION);
+            PendingIntent pLockIntent = PendingIntent.getService(this, 0, lockIntent, 0);
 
-        startForeground(1, notification);
+            //Intent that turns of locking service
+            Intent stopServiceIntent = new Intent(this, UnlockService.class);
+            stopServiceIntent.setAction(Constants.ACTION.TURN_OFF_ACTION);
+            PendingIntent pstopServiceIntent = PendingIntent.getService(this, 0, stopServiceIntent, 0);
 
-        sensitivity = 50;
+            Notification notification = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.intro_icon_1)
+                    .setContentTitle("ShakeUnlock")
+                    .setContentText("Unlock service running")
+                    .setContentIntent(pendingIntent)
+                    .setOngoing(true)
+                    .addAction(R.drawable.ic_lock_black_24dp, "Lock", pLockIntent)
+                    .addAction(R.drawable.ic_highlight_off_black_24dp, "Turn off", pstopServiceIntent)
+                    .build();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                new IntentFilter("sensitivity-changed"));
+            startForeground(1, notification);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                new IntentFilter("stop-service"));
+            sensitivity = 50;
 
-        return super.onStartCommand(intent, Service.START_STICKY,startId);
+            LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                    new IntentFilter(Constants.ACTION.STOP_SERVICE_MAIN_ACTION));
+
+            LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                    new IntentFilter(Constants.ACTION.LOCK_ACTION));
+
+            return super.onStartCommand(intent, Service.START_STICKY, startId);
+        }
+        else {
+            switch (intent.getAction()) {
+                case Constants.ACTION.TURN_OFF_ACTION:
+                    stopSelf();
+                    break;
+            }
+
+            return Service.START_STICKY;
+        }
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             switch(intent.getAction()) {
-                case "stop-service":
+                case Constants.ACTION.STOP_SERVICE_MAIN_ACTION:
                     stopSelf();
                     break;
 
-                case "sensitivity-changed":
+                case Constants.ACTION.SENSITIVITY_CHANGED_ACTION:
                     // Get extra data included in the Intent
                     sensitivity = intent.getIntExtra("sensitivity", 50);
                     Log.d("receiver", "Got message: " + sensitivity);
-        }
+                    break;
+            }
         }
     };
 }
