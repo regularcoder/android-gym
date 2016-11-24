@@ -37,6 +37,12 @@ public class MainActivity extends AppCompatActivity {
         setupSensitivityControl();
 
         setupServiceToggle();
+
+        //Set up receiver for messages from service
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter(Constants.ACTION.LOCK_ACTION));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter(Constants.ACTION.TURN_OFF_ACTION_FINISHED));
     }
 
     int progressChanged = 0;
@@ -117,4 +123,23 @@ public class MainActivity extends AppCompatActivity {
             mgr.lockNow();
         }
     }
+
+    //Handle communication back from the service
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch(intent.getAction()) {
+                case Constants.ACTION.LOCK_ACTION:
+                    lockScreen(null);
+                    break;
+
+                case Constants.ACTION.TURN_OFF_ACTION_FINISHED:
+                    ToggleButton toggle = (ToggleButton) findViewById(R.id.serviceToggle);
+
+                    //Set toggle button status to false
+                    toggle.setChecked(false);
+                    break;
+            }
+        }
+    };
 }

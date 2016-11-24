@@ -4,4 +4,5 @@
     <string name="admin_receiver_status_enabled">Admin-screen access enabled</string>
     <string name="sensitivity_slider">Shake sensitivity:</string>
     <string name="control_service">Enable locking service?</string>
+    <string name="service_message">Click to lock</string>
 </resources>

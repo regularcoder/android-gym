@@ -104,8 +104,7 @@ public class UnlockService extends Service implements SensorEventListener {
             //Show foreground notification so locking service will continue running
             Intent notificationIntent = new Intent(this, UnlockService.class);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                    notificationIntent, 0);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
             //Intent that locks the phone
             Intent lockIntent = new Intent(this, UnlockService.class);
@@ -120,8 +119,8 @@ public class UnlockService extends Service implements SensorEventListener {
             Notification notification = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.intro_icon_1)
                     .setContentTitle("ShakeUnlock")
-                    .setContentText("Unlock service running")
-                    .setContentIntent(pendingIntent)
+                    .setContentText(getString(R.string.service_message))
+                    .setContentIntent(pLockIntent)
                     .setOngoing(true)
                     .addAction(R.drawable.ic_lock_black_24dp, "Lock", pLockIntent)
                     .addAction(R.drawable.ic_highlight_off_black_24dp, "Turn off", pstopServiceIntent)
@@ -142,7 +141,18 @@ public class UnlockService extends Service implements SensorEventListener {
         else {
             switch (intent.getAction()) {
                 case Constants.ACTION.TURN_OFF_ACTION:
+                    //Broadcast the action to MainActivity to inform it that service is stopped
+                    Intent turnOffFinished = new Intent(Constants.ACTION.TURN_OFF_ACTION_FINISHED);
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(turnOffFinished);
+
+                    //Actually stop
                     stopSelf();
+                    break;
+
+                case Constants.ACTION.LOCK_ACTION:
+                    //Broadcast the action to MainActivity which will perform the actual locking
+                    Intent lockIntent = new Intent(Constants.ACTION.LOCK_ACTION);
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(lockIntent);
                     break;
             }
 
